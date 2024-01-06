@@ -10,24 +10,34 @@
 <div id="outputContainer"></div>
 
 <script>
-    async function crawlWebsite() {
+    function crawlWebsite() {
         try {
             const url = prompt("Enter the website URL:");
             if (!url) {
-                console.log("No URL entered. Cancellation.");
+                console.log("No URL entered. Request cancelled.");
                 return;
             }
 
-            const response = await fetch(url);
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(xhr.responseText, 'text/html');
 
-            const pageTitle = doc.title;
-            const pageLinks = Array.from(doc.querySelectorAll('a')).map(link => link.href);
+                        const pageTitle = doc.title;
+                        const pageLinks = Array.from(doc.querySelectorAll('a')).map(link => link.href);
 
-            displayResult(`Title: ${pageTitle}`);
-            displayResult(`Links: ${pageLinks.join('<br>')}`);
+                        displayResult(`Title: ${pageTitle}`);
+                        displayResult(`Links: ${pageLinks.join('<br>')}`);
+                    } else {
+                        console.error('Failed to fetch the page. HTTP status:', xhr.status);
+                    }
+                }
+            };
+
+            xhr.open('GET', url, true);
+            xhr.send();
 
         } catch (error) {
             console.error('Error:', error);
