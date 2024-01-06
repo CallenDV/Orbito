@@ -14,7 +14,7 @@
         try {
             const url = prompt("Enter the website URL:");
             if (!url) {
-                console.log("No URL entered. Request cancelled.");
+                console.log("No URL entered. Cancellation.");
                 return;
             }
 
@@ -31,7 +31,7 @@
                         displayResult(`Title: ${pageTitle}`);
                         displayResult(`Links: ${pageLinks.join('<br>')}`);
                     } else {
-                        console.error('Failed to fetch the page. HTTP status:', xhr.status);
+                        displayError(`Failed to fetch the page. HTTP status: ${xhr.status}`);
                     }
                 }
             };
@@ -40,7 +40,7 @@
             xhr.send();
 
         } catch (error) {
-            console.error('Error:', error);
+            displayError(`Error: ${error.message}`);
         }
     }
 
@@ -49,6 +49,10 @@
         const resultElement = document.createElement('p');
         resultElement.innerHTML = result;
         outputContainer.appendChild(resultElement);
+    }
+
+    function displayError(errorMessage) {
+        alert(errorMessage);
     }
 
     crawlWebsite();
