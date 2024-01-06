@@ -7,11 +7,12 @@
 </head>
 <body>
 
+<div id="outputContainer"></div>
+
 <script>
     async function crawlWebsite() {
         try {
             const url = prompt("Enter the website URL:");
-
             if (!url) {
                 console.log("No URL entered. Cancellation.");
                 return;
@@ -25,12 +26,19 @@
             const pageTitle = doc.title;
             const pageLinks = Array.from(doc.querySelectorAll('a')).map(link => link.href);
 
-            console.log('Title:', pageTitle);
-            console.log('Links:', pageLinks);
+            displayResult(`Title: ${pageTitle}`);
+            displayResult(`Links: ${pageLinks.join('<br>')}`);
 
         } catch (error) {
             console.error('Error:', error);
         }
+    }
+
+    function displayResult(result) {
+        const outputContainer = document.getElementById('outputContainer');
+        const resultElement = document.createElement('p');
+        resultElement.innerHTML = result;
+        outputContainer.appendChild(resultElement);
     }
 
     crawlWebsite();
